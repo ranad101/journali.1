@@ -1,13 +1,16 @@
 //
-//  ContentView.swift
+//  SplashScreen.swift
 //  journali
 //
-//  Created by Ranad aldawood on 17/04/1446 AH.
+//  Created by Ranad aldawood on 18/04/1446 AH.
 //
 
 import SwiftUI
 
-struct ContentView: View {
+struct SplashScreen: View {
+    @State private var isActive = false
+    @State private var size = 0.8
+    @State private var opacity = 0.5
     var body: some View {
         ZStack {
             LinearGradient(
@@ -40,10 +43,9 @@ struct ContentView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding()
-        }
-    }
+        } }
 }
 
 #Preview {
-    ContentView()
+    SplashScreen()
 }
