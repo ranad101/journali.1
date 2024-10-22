@@ -32,7 +32,7 @@ struct ContentView: View {
                     .font(.system(size: 42, weight: .black))
                     .padding(.bottom, 1)
 
-                Text("Your thoughts, your story")
+                Text("MAIN")
                     .foregroundColor(Color.white)
                     .font(.system(size: 18, weight: .light))
                     .padding(.top, 1)
