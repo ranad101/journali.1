@@ -58,7 +58,7 @@ struct ContentView: View {
                         .frame(width: 30, height: 30)
                         .foregroundColor(.lilac)
                 }
-            } .sheet(isPresented: $showSheet, content:{ Rectangle() .fill(Color.black)})
+            } .sheet(isPresented: $showSheet, content:{ AddNewJournal()})
             
             .padding(.top, 50)  // Padding from the top
             .padding(.trailing, 20)  // Padding from the right
