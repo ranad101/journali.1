@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddNewJournal: View {
     var body: some View {
-        ZStack{ Color.black
+        ZStack{ Color.sheet
                 .ignoresSafeArea()
             
             Button("Save") {
