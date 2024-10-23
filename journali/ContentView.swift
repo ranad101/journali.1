@@ -8,38 +8,61 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var showSheet = false
     var body: some View {
-        ZStack {
-            LinearGradient(
-                gradient: Gradient(stops: [
-                    .init(color: Color.splash, location: 0.2),
-                    .init(color: Color.black, location: 0.8)
-                ]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
-
-            VStack {
-                Image("url")
-                    .renderingMode(.original)
-                    .resizable()
-                    .frame(width: 77.7, height: 101.0)
-                    .padding(.bottom, 5)
-
-                Text("Journali")
-                    .foregroundColor(Color.white)
-                    .font(.system(size: 42, weight: .black))
-                    .padding(.bottom, 1)
-
-                Text("MAIN")
-                    .foregroundColor(Color.white)
-                    .font(.system(size: 18, weight: .light))
-                    .padding(.top, 1)
-                    .kerning(1)
+        ZStack(alignment: .topLeading) { // ZStack for layering views
+            // Background content
+            NavigationStack {
+                ContentUnavailableView(
+                    label: {
+                        Label("Begin Your Journal", image: "url")
+                            .foregroundColor(.lilac)
+                            .font(.system(size: 24, weight: .bold))
+                    },
+                    description: {
+                        Text("Craft your personal diary, tap the plus icon to begin")
+                            .foregroundColor(.white)
+                            .font(.system(size: 18, weight: .light))
+                            .padding(.top, 1)
+                            .kerning(0.6)
+                    })
+                    .background(Color.black)
+                    .ignoresSafeArea()
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding()
+
+            // Top-left "Journal" text
+            Text("Journal")
+                .foregroundColor(.white)
+                .font(.system(size: 34, weight: .semibold))
+                .padding(.top, 50)  // Padding from the top of the screen
+                .padding(.leading, 20)  // Padding from the left edge
+
+            // Buttons for filtering and adding a journal
+            HStack {
+                Button(action: {
+                    // Action for filter button
+                    print("Filter journals")
+                }) {
+                    Image(systemName: "line.horizontal.3.decrease.circle.fill") // Filter icon
+                        .resizable()
+                        .frame(width: 30, height: 30)
+                        .foregroundColor(.lilac)
+                }
+
+                Button(action: { showSheet.toggle()
+                    // Action for adding a new journal
+                    print("Add new journal")
+                }) {
+                    Image(systemName: "plus.circle.fill") // Plus icon
+                        .resizable()
+                        .frame(width: 30, height: 30)
+                        .foregroundColor(.lilac)
+                }
+            } .sheet(isPresented: $showSheet, content:{ Rectangle() .fill(Color.black)})
+            
+            .padding(.top, 50)  // Padding from the top
+            .padding(.trailing, 20)  // Padding from the right
+            .frame(maxWidth: .infinity, alignment: .topTrailing) // Align buttons to the top-right
         }
     }
 }
