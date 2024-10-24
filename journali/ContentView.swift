@@ -44,22 +44,29 @@ struct ContentView: View {
                         ForEach(journalEntries) { entry in
                             VStack(alignment: .leading) {
                                 Text(entry.title)
-                                    .font(.system(size: 22, weight: .bold))
-                                    .foregroundColor(.white)
-                                Text(entry.content)
-                                    .font(.system(size: 18))
-                                    .foregroundColor(.gray)
-                                    .lineLimit(2) // Limit content to the first 2 lines
+                                    .font(.system(size: 24, weight: .semibold))
+                                    .foregroundColor(.lilac)
+                                    
                                 Text(entry.date.formatted(date: .abbreviated, time: .omitted))
                                     .font(.caption)
+                                    .font(.system(size: 14, weight: .regular))
                                     .foregroundColor(.gray)
-                                    .padding(.top, 2)
+                                
+                                
+                                Text(entry.content)
+                                    .font(.system(size: 18))
+                                    .foregroundColor(.white)
+                                    .lineLimit(2) // Limit content to the first 2 lines
+                                    .frame(width: 350)
+                                    .padding(.top , 10)
+                               
                             }
                             .padding()
                             .background(Color.gray.opacity(0.2)) // Slight background for each entry
                             .cornerRadius(10)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
+                            
                         }
                     }
                     .padding(.top, 100) // Ensure content starts below the header
