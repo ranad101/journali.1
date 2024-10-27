@@ -4,6 +4,7 @@ struct ContentView: View {
     @State private var showAddJournalSheet = false
     @State private var journalEntries: [JournalEntry] = []
     @State private var selectedEntry: JournalEntry? = nil
+    @State private var searchText: String = ""
 
     var body: some View {
         NavigationView {
@@ -43,7 +44,10 @@ struct ContentView: View {
                         .padding(.top, 20)
                     }
                     Spacer().frame(height: 20)
-
+                    
+                    let filteredEntries = journalEntries.filter {
+                                        searchText.isEmpty || $0.title.localizedCaseInsensitiveContains(searchText) || $0.content.localizedCaseInsensitiveContains(searchText)
+                                    }
                     if journalEntries.isEmpty {
                         // Centered empty state with image, label, and description text
                         VStack(spacing: 10) {
@@ -127,6 +131,7 @@ struct ContentView: View {
                     }
                 )
             }
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search journal entries")
         }
     }
 
