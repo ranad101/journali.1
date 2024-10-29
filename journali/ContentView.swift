@@ -119,7 +119,7 @@ struct ContentView: View {
                                                     .foregroundColor(.lilac)
                                             }
                                         }
-                                        .padding(.top, -45) // Adjust for raised look
+                                        .padding(.top, -30) // Adjust for raised look
                                         
                                         // Date and Content
                                         Text(entry.date.formatted(date: .abbreviated, time: .omitted))
