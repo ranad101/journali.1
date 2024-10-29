@@ -5,6 +5,8 @@ struct ContentView: View {
     @State private var journalEntries: [JournalEntry] = []
     @State private var selectedEntry: JournalEntry? = nil
     @State private var searchText: String = ""
+    @State private var showBookmarksOnly = false
+    @State private var isSortedDescending = true
 
     var body: some View {
         NavigationView {
@@ -12,7 +14,6 @@ struct ContentView: View {
                 Color.black.ignoresSafeArea() // Black background
                 
                 VStack(alignment: .leading, spacing: 0) {
-                    // Custom title and toolbar
                     HStack {
                         Text("Journal")
                             .foregroundColor(.white)
@@ -22,10 +23,14 @@ struct ContentView: View {
                         
                         Spacer()
                         
-                        // Filter Button
+                        // Filter and Sort Menu
                         Menu {
-                            Button("Bookmark", action: bookmark)
-                            Button("Journal Date", action: sortByJournalDate)
+                            Button("Show Bookmarks") {
+                                showBookmarksOnly.toggle()
+                            }
+                            Button("Sort by Journal Date") {
+                                sortByJournalDate()
+                            }
                         } label: {
                             Image(systemName: "line.3.horizontal.decrease.circle")
                                 .foregroundColor(.lilac)
@@ -44,23 +49,33 @@ struct ContentView: View {
                         .padding(.top, 20)
                     }
                     
-                    // Search bar below the title and toolbar
-                    TextField("Search", text: $searchText)
-                        .padding(10)
-                        .background(Color.gray.opacity(0.2))
-                        .foregroundColor(.white) // Ensures the text inside search bar is white
-                        .cornerRadius(8)
-                        .padding(.horizontal, 20)
-                        .padding(.top, 10)
+                    // Search bar with left and right icons
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.gray)
+                        TextField("Search", text: $searchText)
+                            .foregroundColor(.white)
+                        Image(systemName: "mic.fill")
+                            .foregroundColor(.gray)
+                    }
+                    .padding(10)
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(8)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 10)
 
                     Spacer().frame(height: 20)
 
-                    let filteredEntries = journalEntries.filter {
-                        searchText.isEmpty || $0.title.localizedCaseInsensitiveContains(searchText) || $0.content.localizedCaseInsensitiveContains(searchText)
-                    }
+                    let filteredEntries = journalEntries
+                        .filter { entry in
+                            (searchText.isEmpty || entry.title.localizedCaseInsensitiveContains(searchText) || entry.content.localizedCaseInsensitiveContains(searchText)) &&
+                            (!showBookmarksOnly || entry.isBookmarked)
+                        }
+                        .sorted {
+                            isSortedDescending ? $0.date > $1.date : $0.date < $1.date
+                        }
                     
                     if journalEntries.isEmpty {
-                        // Centered empty state with image, label, and description text
                         VStack(spacing: 10) {
                             Image("url")
                                 .resizable()
@@ -79,41 +94,48 @@ struct ContentView: View {
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
-                        // Display journal entries with swipe actions in a List
+                        // Display journal entries
                         List {
                             ForEach(filteredEntries) { entry in
-                                ZStack(alignment: .topLeading) {
-                                    VStack(alignment: .leading, spacing: 5) {
+                                ZStack(alignment: .leading) {
+                                    Rectangle()
+                                        .fill(Color.gray.opacity(0.2))
+                                        .frame(width: 350, height: 227)
+                                        .cornerRadius(10)
+                                    
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        // Title and Bookmark raised slightly
                                         HStack {
                                             Text(entry.title)
                                                 .font(.system(size: 24, weight: .semibold))
                                                 .foregroundColor(.lilac)
                                             
-                                            Spacer() // Pushes the bookmark button to the far right
+                                            Spacer()
                                             
-                                            Button(action: {}) {
-                                                Image(systemName: "bookmark")
+                                            Button(action: {
+                                                toggleBookmark(for: entry)
+                                            }) {
+                                                Image(systemName: entry.isBookmarked ? "bookmark.fill" : "bookmark")
                                                     .foregroundColor(.lilac)
                                             }
-                                            .padding(.trailing, 10) // Adjusts the right padding as needed
                                         }
+                                        .padding(.top, -45) // Adjust for raised look
                                         
+                                        // Date and Content
                                         Text(entry.date.formatted(date: .abbreviated, time: .omitted))
                                             .font(.caption)
                                             .foregroundColor(.gray)
-                                            .padding(.bottom, 5)
                                         
                                         Text(entry.content)
                                             .font(.system(size: 18))
                                             .foregroundColor(.white)
-                                            .lineLimit(2)
-                                            .frame(width: 350, alignment: .leading)
+                                            .lineLimit(5)
+                                            .frame(width: 320)
                                             .padding(.top, 10)
                                     }
-                                    .padding() // Adds padding around the entire VStack
+                                    .padding()
                                 }
-                                .padding()
-                                
+                                .frame(width: 350, height: 227)
                                 .cornerRadius(10)
                                 .padding(.trailing, 20)
                                 .padding(.top, 20)
@@ -134,15 +156,17 @@ struct ContentView: View {
                                     .tint(.edit)
                                 }
                             }
-                            .listRowBackground(Color.gray.opacity(0.2)) // Ensure list rows match background color
+                            .listRowBackground(Color.black)
                         }
-                        .scrollContentBackground(.hidden) // Hide default List background
-                        .padding(.horizontal, -20) // Adjust padding to match the previous layout
+                        .scrollContentBackground(.hidden)
+                        .padding(.horizontal, -20)
                     }
                 }
             }
             .sheet(isPresented: $showAddJournalSheet) {
                 AddNewJournal(
+                    title: selectedEntry?.title ?? "",
+                    content: selectedEntry?.content ?? "",
                     onSave: { title, content in
                         if let entryIndex = journalEntries.firstIndex(where: { $0.id == selectedEntry?.id }) {
                             journalEntries[entryIndex].title = title
@@ -175,12 +199,14 @@ struct ContentView: View {
         }
     }
 
-    private func bookmark() {
-        print("Bookmark action")
+    private func toggleBookmark(for entry: JournalEntry) {
+        if let index = journalEntries.firstIndex(where: { $0.id == entry.id }) {
+            journalEntries[index].isBookmarked.toggle()
+        }
     }
 
     private func sortByJournalDate() {
-        print("Sort by journal date action")
+        isSortedDescending.toggle()
     }
 }
 
