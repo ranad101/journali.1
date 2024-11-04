@@ -15,3 +15,6 @@ Getting Started
 	•	Bookmark favorites: Mark entries you want to revisit often.
 	•	Voice search: Use the mic icon in the search bar to search by voice.
 	•	Sort by date: Easily navigate entries by sorting them chronologically to view your personal journey.
+![Add a heading](https://github.com/user-attachments/assets/27c96828-c198-422e-99f0-71f27eb8196e)
+
+for contacting here is my email: aldawoodranad@outlook.com
