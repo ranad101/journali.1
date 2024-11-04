@@ -10,4 +10,8 @@ Key Features
 	•	Customizable Themes: Dark-themed interface with lilac highlights for an elegant journaling experience.
 Getting Started
 
-Install the app on an iOS device, then tap the plus icon to create a journal entry. Customize each entry with titles and bookmark the ones you want to revisit often. Use the mic icon in the search bar to search by voice, and sort entries by date for easy navigation through your personal journey.
+	•	Install the app on an iOS device.
+	•	Create a journal entry: Tap the plus icon to add a new entry with a customizable title.
+	•	Bookmark favorites: Mark entries you want to revisit often.
+	•	Voice search: Use the mic icon in the search bar to search by voice.
+	•	Sort by date: Easily navigate entries by sorting them chronologically to view your personal journey.
